@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,
+minimum-scale=1, user-scalable=no" />
+
+<!-- <link href="https://cdn.bootcdn.net/ajax/libs/antd-mobile/2.3.4/antd-mobile.min.css" rel="stylesheet"> -->
+<link href="css/antd-mobile.css" rel="stylesheet">
+<link href="chatr/css/chat.css" rel="stylesheet">
+<link rel="stylesheet" href="chatr/css/font-awesome.css"/> <!-- Font-Awesome-Icons-CSS -->
+<link rel="stylesheet" href="chatr/css/login.css" type="text/css" media="all"/> <!-- Style-CSS -->
+<style type="text/css">
+  .logo-container {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .logo-img {
+    width: 240px;
+    height: 240px;
+  }
+  .error-msg {
+    color: red;
+    text-align: center;
+    font-size: 18px;
+  }
+.am-tab-bar{ /*使导航始终在底部*/
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: inherit; /*高度包裹内容*/
+}
+
+.stick-top { /*固定在顶部*/
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+
+/*消息文本居右*/
+#chat-page .chat-me .am-list-extra {
+    flex-basis: auto; /*宽度包裹内容*/
+}
+
+#chat-page .chat-me .am-list-content {
+    padding-right: 15px;
+    text-align: right;
+}
+  
+</style>
+<!-- <script src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"> -->
+<script src="scripts/ku/fastclick.js"></script>
+</script>
+<script>
+
+	if ('addEventListener' in document) {
+		document.addEventListener('DOMContentLoaded', function() {
+			FastClick.attach(document.body);
+		}, false);
+	}
+	if (!window.Promise) {
+		document
+				.writeln(
+						//'<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"'
+						'<script src="scripts/ku/es6-promise.min.js"'
+						+'>'+ '<'+'/'+'script>'
+				);
+	}
+</script>
+<title>r单页面应用程序</title>
+</head>
+<body>
+<!-- <input type="file" value="sdgsdg" id="demo_input" />
+<img style="width: 300px;height: 240px;" src="imgs/avatars/头像1.png" alt="" id="xx" > -->
+	<div id="like_app_container"></div>
+</body>
+<!-- <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script> -->
+<script src="scripts/ku/react.development.js"></script>
+<script src="scripts/ku/react-dom.development.js"></script>
+<script src="scripts/ku/babel.min.js"></script>
+<!-- <script data-main="" src="scripts/ku/require.js"></script> -->
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/antd-mobile/2.3.4/antd-mobile.min.js"></script> -->
+<script src="scripts/ku/antd-mobile.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/react-router-dom/5.2.0/react-router-dom.min.js"></script> -->
+<script src="scripts/ku/react-router-dom.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/redux/4.0.5/redux.min.js"></script> -->
+<script src="scripts/ku/redux.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/react-redux/7.2.1/react-redux.min.js"></script> -->
+<script src="scripts/ku/react-redux.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/redux-thunk/2.3.0/redux-thunk.min.js"></script> -->
+<script src="scripts/ku/redux-thunk.js"></script>
+<script src="scripts/ku/redux-devtools-extension.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.20.0/axios.min.js"></script> -->
+<script src="scripts/ku/axios.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/prop-types/15.7.2/prop-types.min.js"></script> -->
+<script src="scripts/ku/prop-types.js"></script>
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/socket.io/2.3.1/socket.io.dev.min.js"></script> -->
+<script src="scripts/ku/socket.io.dev.js"></script>
+<script src="scripts/ku/rc-queue-anim.js"></script>
+
+<!-- <script src="scripts/re/za/container/countDown.js" ></script> -->
+<script src="scripts/re/api/ajax.js" ></script>
+<script src="scripts/re/api/index.js" ></script>
+<script src="scripts/re/redux/actionTypes.js" ></script>
+<script src="scripts/re/redux/actionCreators.js" ></script>
+<script src="scripts/re/redux/reducers.js" ></script>
+<script src="scripts/re/redux/store.js" ></script>
+
+<script src="scripts/re/components/logo.js" ></script>
+<script src="scripts/re/components/headerSelector.js" ></script>
+<script src="scripts/re/containers/register.js" ></script>
+<script src="scripts/re/containers/login.js" ></script>
+<script src="scripts/re/containers/dashenInfo.js" ></script>
+<script src="scripts/re/containers/laobanInfo.js" ></script>
+<script src="scripts/re/containers/main.js" ></script>
+<script src="scripts/re/containers/dialogMain.js" ></script>
+<script src="scripts/re/containers/dialogLogin.js" ></script>
+<script src="scripts/re/base/func/funcCatalog.js" ></script>
+<script src="scripts/re/components/navFooter.js" ></script>
+<script src="scripts/re/components/notFound.js" ></script>
+<script src="scripts/re/containers/dashen.js" ></script>
+<script src="scripts/re/containers/laoban.js" ></script>
+<script src="scripts/re/containers/message.js" ></script>
+<script src="scripts/re/containers/personal.js" ></script>
+<script src="scripts/re/containers/chat.js" ></script>
+<script src="scripts/re/components/userList.js" ></script>
+
+<script type="text/babel">
+//require(['scripts/re/za/container/countDown.js'], function(CountDown) {
+
+//});
+const { 
+NavBar,
+WingBlank,
+List,
+InputItem,
+WhiteSpace,
+Radio,
+Button,
+TextareaItem,
+Grid,
+TabBar,
+Result,
+Modal,
+Card,
+Icon,
+Badge } = self["antd-mobile"];
+const { HashRouter, Switch, Route, Redirect } = ReactRouterDOM;
+const { Provider } = ReactRedux;
+//const { Item } = TabBar;
+const QueueAnim = self['rc-queue-anim'];//钉子，请在导入时思考全局变量的某个属性。
+
+class JSXRegistry {
+  static userListJSX(props) {
+    const {userList} = props;
+    const {Header,Body} = Card;
+    return (
+      <WingBlank style={{marginTop: 50, marginBottom: 50}}>
+            <QueueAnim type='scale' >
+                {
+                    userList.map(user => (
+                        <div key={user.userId}>
+                            <WhiteSpace />
+                            <Card onClick={() => props.history.push(`/chat/${user.userId}`)}>
+                                {user.header ? <Header
+                                    thumb={`imgs/avatars/${user.header}.png`}
+                                    extra={user.username}
+                                /> : <Header
+                                        extra={user.username}
+                                    />}
+                                <Body>
+                                    <div>职位: {user.post}</div>
+                                    {!user.company ? <div><div>公司：{user.username}</div><div>月薪：{user.salary}</div></div> : null}
+                                    <div>描述: {user.info}</div>
+                                </Body>
+                            </Card>
+                        </div>
+                    ))
+                }
+            </QueueAnim>
+        </WingBlank>
+    );
+  }
+  static renderingChat() {
+    const { user } = this.props;
+    const { chatMsgs, users } = this.props.chat;
+    const targetId = this.props.match.params.userId;
+    console.log('targetId=' + targetId);
+    console.log('chatMsgs=' + chatMsgs);
+    console.log('users=' + users,'users[targetId]=' + users[targetId]);
+    if (!users[targetId]) {
+      return null;//目标用户不存在什么也不显示
+    }
+    const meId = user.userId;
+    const msgId = [targetId, meId].sort().join('_');
+    const msgs = chatMsgs.filter(msg => msg.msgId === msgId);
+    const targetIcon = users[targetId] ?
+      `imgs/avatars/${users[targetId].header}.png`: null;
+    const {Item} = List;
+    return (
+      <div id='chat-page'>
+                <NavBar
+                    className='stick-top'
+                    icon={<Icon type='left' />}
+                    onLeftClick={() => this.props.history.goBack()}
+                >
+                    {users[targetId].username}
+                </NavBar>
+                <List style={{ marginBottom: 50, marginTop: 50 }}>
+                    <QueueAnim type='scale' delay={100}>
+                        {
+                            msgs.map(msg => {
+                                if (msg.from === targetId) {
+                                    return (
+                                        <Item
+                                            key={msg.chatId}
+                                            thumb={targetIcon}
+                                            multipleLine={true}
+                                            wrap
+                                        >
+                                            {msg.content}
+                                        </Item>
+                                    )
+                                } else {
+                                    return (
+                                        <Item
+                                            key={msg.chatId}
+                                            className='chat-me'
+                                            extra='我'
+                                            multipleLine={true}
+                                            wrap
+                                        >
+                                            {msg.content}
+                                        </Item>
+                                    )
+                                }
+                            })
+                        }
+                    </QueueAnim>
+                </List>
+                <div className='am-tab-bar'>
+                    <InputItem
+                        placeholder="请输入"
+                        value={this.state.content}
+                        onChange={val => this.setState({content: val})}
+                        onFocus={() => this.setState({isShow: false})}
+                        extra={
+                            <span>
+                                <span onClick={this.toggleShow}
+                                    style={{ marginRight: 10 }}>❤</span>
+                                <span onClick={this.submit}>发送</span>
+                            </span>
+                        }
+                    />
+                    {
+                        this.state.isShow ? (
+                            <Grid
+                                data={this.emojis}
+                                columnNum={8}
+                                carouselMaxRow={4}
+                                isCarousel={true}
+                                onClick={(item) => {
+                                    this.setState({ content: this.state.content + item.text })
+                                }}
+                            />
+                        ) : null
+                    }
+                </div>
+            </div>
+    );
+  }
+  static renderingNavFooter() {
+    // nav.hide = true/false hide 代表当前项应该被隐藏
+    const navList = this.props.navList.filter(nav => !nav.hide) // 回调函数返回值为true,当前元素就会留下, 否则不留
+    // 当前请求的路径
+    const {pathname} = this.props.location
+    return (
+      <TabBar>
+      {
+        navList.map((nav, index) => (
+        <TabBar.Item key={nav.path}
+          badge={nav.path === '/message' ? this.props.unReadCount : 0}
+          title={nav.text}
+          icon={{uri: `./imgs/${nav.icon}.png`}}
+          selectedIcon={{uri: `./imgs/${nav.icon}-selected.png`}}
+          selected={pathname===nav.path}
+          onPress={() => {
+            this.props.history.replace(nav.path)
+          }}
+        />
+        ))
+      }
+      </TabBar>
+    );
+  }
+  static renderingNotFound() {
+    return (
+      <div>
+      <div>
+      <h2>抱歉，找不到该页面!</h2>
+      <Button
+        type="primary"
+        onClick={() => this.props.history.replace("/")}
+      >
+                  回到首页
+      </Button>
+      </div>
+      </div>
+    );
+  }
+  static renderingPersonal() {
+    const Item = List.Item;
+    const Brief = Item.Brief;
+    const { username, header, post, info, salary, company } = this.props.user;
+    return (
+      <div style={{ marginTop: 50 }}>
+      <Result
+        img={<img src={`imgs/avatars/${header}.png`} style={{width: 50}} alt="header"/>}
+        title={username}
+        message={company}
+      />
+      <List renderHeader={() => '相关信息'}>
+      <Item multipleLine>
+      <Brief>职位: {post}</Brief>
+      <Brief>简介: {info}</Brief>
+      {salary ? <Brief>薪资: {salary}</Brief> : null}
+      </Item>
+      </List>
+      <WhiteSpace/>
+      <List>
+      <Button type='warning' onClick={this.handleLogout}>退出登录</Button>
+      </List>
+      </div>
+    );
+  }
+  static renderingMessage() {
+    const { Item } = List;
+    const { Brief } = Item;
+    // 得到props 中的user 和chat
+    const { user, chat } = this.props;
+    // 得到当前用户的id
+    const meId = user.userId;
+    // 得到所用用户的集合对象users 和所有聊天的数组
+    const { users, chatMsgs } = chat;
+        // 得到所有聊天的最后消息的数组
+        const lastMsgs = Message.getLastMsgs(chatMsgs, meId);
+    return (
+            <List style={{ marginBottom: 50, marginTop: 50 }}>
+                {
+                    lastMsgs.map(msg => {
+                        const targetId = msg.from === meId ? msg.to : msg.from;
+                        const targetUser = users[targetId];
+                        const avatarImg = targetUser.header ?
+                            `imgs/avatars/${targetUser.header}.png`: null;
+                        console.log("renderingMessage:msg.unReadCount:"+msg.unReadCount);
+                        return (
+                            <Item
+                                key={msg.chatId}
+                                extra={<Badge text={msg.unReadCount} />}
+                                thumb={avatarImg}
+                                arrow='horizontal'
+                                onClick={() => this.props.history.push(`/chat/${targetId}`)}
+                            >
+                                {msg.content}
+                                <Brief>{targetUser.username}</Brief>
+                            </Item>
+                        )
+                    })
+                }
+            </List>
+    );
+  }
+  static renderingLaoban() {
+    return (
+      <UserList userList={this.props.userList}></UserList>
+    );
+  }
+  static renderingDashen() {
+    return (
+      <UserList userList={this.props.userList}></UserList>
+    );
+  }
+  static renderingDialogLogin() {
+    const {msg} = this.props;
+    return <div className="background">
+      <div className="header-w3l">
+      <h1>测测聊天室</h1>
+      </div>
+      <div className="main-content-agile">
+      <div className="sub-main-w3">
+        <h2>登录</h2>
+        {msg ? <p className='error-msg'>{msg}</p> : null}
+        <form>
+
+            <div className="icon1">                
+                <select id="chatId"><option>红红</option><option>明明</option></select>
+            </div>
+
+            <div className="icon2">
+                <input placeholder="密码" id="chatPassword" type="password" value="1234"  onChange={val => this.handleChange('pwd', val)}/>
+            </div>
+
+            <div className="clear"></div>
+            <input type="button" value="登录" onClick={this.login}/>
+        </form>
+      </div>
+      </div>
+      <div className="footer">
+      <p>测测制作室 版权所有Copyright 2007-2020  All Rights Reserved </p>
+      </div>
+      </div>;
+  }
+  static renderingDialogMain() {
+    const { chatId, login} = this.props.dialog;
+    // 如果用户信息已完善, 自动跳转到主界面
+    if (!chatId||!login) {
+      return <Redirect to='/dialogLogin' />;
+    }
+    return <div>对话框主面板</div>;
+  }
+  static renderingDialog() {
+    return <div><img className='bgImg' src="chatr/img/chat_bg.jpg"></img>
+    <div className="abs cover contaniner">
+    <div className="abs cover pnl">
+        <div className="top pnl-head" style={{color: 'white'}} id="userName"></div>
+        <div className="abs cover pnl-body" id="pnlBody">
+            <div className="abs cover pnl-left">
+                <div className="abs cover pnl-msgs scroll" id="show">
+                    <div className="pnl-list" id="hists"></div>
+                    <div className="pnl-list" id="msgs">
+                    </div>
+                </div>
+
+                <div className="abs bottom pnl-text">
+                    <div className="abs cover pnl-input">
+                        <textarea className="scroll" id="context_text" onkeydown="sendMessage(self)" wrap="hard" placeholder="在此输入文字信息..."></textarea>
+                        <div className="abs atcom-pnl scroll hide" id="atcomPnl">
+                            <ul className="atcom" id="atcom"></ul>
+                        </div>
+                    </div>
+
+                    <div className="abs br pnl-btn" id="submit" style={{backgroundColor: '#20C4CA',color: 'white'}} onclick="sendMsg(self)">
+                        发送
+                    </div>
+                    <div className="pnl-support" id="copyright"><a href="http://www.cece.cn">测测,版本所有</a></div>
+                </div>
+            </div>
+
+
+            <div className="abs right pnl-right">
+                <div className="slider-container hide"></div>
+                <div className="pnl-right-content">
+                    <div className="pnl-tabs">
+                        <div className="tab-btn active" id="hot-tab">好友列表</div>
+                    </div>
+                    <div className="pnl-hot">
+                        <ul className="rel-list unselect" id="userlist">
+                        </ul>
+                    </div>
+
+                </div>
+
+
+                <div className="pnl-right-content">
+                    <div className="pnl-tabs">
+                        <div className="tab-btn active">系统广播</div>
+                    </div>
+                    <div className="pnl-hot">
+                        <ul className="rel-list unselect" id="broadcastList">
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div></div>
+  }
+  static renderingMain() {
+    // 得到当前请求的path
+    const pathname = this.props.location.pathname;
+    const { user } = this.props
+    console.log('renderingMain(): user=',user);
+    console.log('renderingMain(): this.props.location.pathname=',pathname);
+    // 如果用户信息已完善, 自动跳转到主界面
+    if (!user.userId) { // 如果没值, 自动跳转到登陆界面
+      return <Redirect to='/login' />;
+    } else {
+      // 请求根路径时, 自动跳转到对应的用户主界面
+      if (pathname === '/') {
+        const path = getRedirectPath(user.type, user.header);
+        return <Redirect to={path} />;
+      }
+      // 指定哪个nav 应该被隐藏
+      if (user.type === 'laoban') {
+        this.navList[1].hide = true;
+      } else {
+        this.navList[0].hide = true;
+      }
+    }
+    // 得到当前的nav
+    const currentNav = this.navList.find(nav => nav.path === pathname);
+    return <div>
+      {currentNav ? <NavBar className='stick-top'>{currentNav.title}</NavBar> : null}
+      <Switch>
+        {this.navList.map(nav=> <Route key={nav.path} path={nav.path} component={nav.component} />)}
+        <Route path='/laobaninfo' component={LaobanInfo} />
+        <Route path='/dasheninfo' component={DashenInfo} />
+        <Route path='/chat/:userId' component={Chat} />
+        <Route component={NotFound}></Route>
+      </Switch>
+      {currentNav ? <NavFooter unReadCount={this.props.unReadCount} navList={this.navList}/> : null}
+    </div>;
+  }
+  static renderingHeaderSelector() {
+    // 计算头部显示
+    const { icon } = this.state;
+    const gridHeader = icon ? <p>已选择头像: <img src={icon} alt="header"/></p> : '请选择头像';
+    return <List renderHeader={() => gridHeader}>
+      <Grid data={this.headerList} columnNum={5} onClick={this.selectHeader} ></Grid>
+      </List>;
+  }
+  static renderingDashenInfo() {
+    const { user } = this.props
+    // 如果用户信息已完善, 自动跳转到大神主界面
+    if (user.header) {
+      return <Redirect to='/dashen' />
+    }
+    return <div><NavBar>大神信息完善</NavBar>
+      <HeaderSelector setHeader={this.setHeader} />
+      <InputItem placeholder='请输入求职岗位' onChange={val => this.handleChange('post', val)} >求职岗位:</InputItem>
+      <TextareaItem title="个人介绍:" rows={3} onChange={val => this.handleChange('info', val)} />
+      <Button type='primary' onClick={() => this.props.updateUser(this.state)} >保存</Button></div>;
+  }
+  static renderingLaobanInfo() {
+    const { user } = this.props;
+    // 如果用户信息已完善, 自动跳转到laoban 主界面
+    console.log("renderingLaobanInfo()", "user.header=" + user.header);
+    if (user.header) {
+       return <Redirect to='/laoban' />;
+    }
+    return <div><NavBar>老板信息完善</NavBar>
+      <HeaderSelector setHeader={this.setHeader}/>
+      <InputItem onChange={val => this.handleChange('post', val)}>招聘职位:</InputItem>
+      <InputItem onChange={val => this.handleChange('company', val)}>公司名称:</InputItem>
+      <InputItem onChange={val => this.handleChange('salary', val)}>职位薪资:</InputItem>
+      <TextareaItem title="职位要求:"rows={3} onChange={val => this.handleChange('info', val)}/>
+      <Button type='primary' onClick={() => this.props.updateUser(this.state)}>保存</Button>
+    </div>;
+  }
+  static renderingLogin() {
+    const {redirectTo, msg} = this.props.user;
+    if(redirectTo) {
+      return <Redirect to={redirectTo}/>;
+    }
+    console.log(msg);
+    return (
+      <div>
+      <NavBar>测测直聘——登&nbsp;&nbsp;&nbsp;陆</NavBar>
+      <Logo/>
+      <WingBlank>
+      {msg ? <p className='error-msg'>{msg}</p> : null}
+      <List>
+      <InputItem
+      placeholder='输入用户名'
+      onChange={val => this.handleChange('username', val)}
+      >
+                    用户名:
+      </InputItem>
+      <WhiteSpace/>
+      <InputItem
+      type='password'
+      placeholder='输入密码'
+      onChange={val => this.handleChange('password', val)}
+      >
+                    密&nbsp;&nbsp;&nbsp;码:
+      </InputItem>
+      <WhiteSpace/>
+      <Button type='primary' onClick={this.login}>登&nbsp;&nbsp;&nbsp;陆
+      </Button>
+      <WhiteSpace/>
+      <Button onClick={this.toRegister}>还没有账号</Button>
+      </List>
+      </WingBlank>
+      </div>
+    );
+  }
+  static renderingRegister() {
+    const {redirectTo, msg} = this.props.user;
+    console.log("renderingRegister: this.props.user=",this.props.user)
+    if(redirectTo) {
+      return <Redirect to={redirectTo}/>;
+    }
+    return (
+      <div>
+      <NavBar>测测直聘——注&nbsp;&nbsp;&nbsp;册</NavBar>
+      <Logo/>
+      <WingBlank>
+      {msg ? <p className='error-msg'>{msg}</p> : null}
+      <List>
+      <InputItem
+      placeholder='输入用户名'
+      onChange={val => this.handleChange('username', val)}
+      >
+                     用户名:
+      </InputItem>
+      <WhiteSpace/>
+      <InputItem
+      type='password'
+      placeholder='输入密码'
+      onChange={val => this.handleChange('password', val)}
+      >
+                  密&nbsp;&nbsp;&nbsp;码:
+      </InputItem>
+      <WhiteSpace/>
+      <InputItem
+      type='password'
+      placeholder='输入确认密码'
+      onChange={val => this.handleChange('password2', val)}
+      >
+                  确认密码:
+      </InputItem>
+      <WhiteSpace/>
+      <List.Item>
+      <span style={{marginRight: 30}}>用户类型:</span>
+      <Radio checked={this.state.type==='dashen'}
+      onClick={() => {this.handleChange('type', 'dashen')}}>大神</Radio>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <Radio checked={this.state.type==='laoban'}
+      onClick={() => {this.handleChange('type', 'laoban')}}>老板</Radio>
+      </List.Item>
+      <WhiteSpace/>
+      <Button type='primary' onClick={this.register}>注&nbsp;&nbsp;&nbsp;册
+      </Button>
+      <WhiteSpace/>
+      <Button onClick={this.toLogin}>已经有账号</Button>
+      </List>
+      </WingBlank>
+      </div>
+    );
+  }
+  static startLogoDisplay() {
+    ReactDOM.render(
+      <Logo>
+        {JSXRegistry.renderingLogo()}
+      </Logo>
+      , 
+      JSXRegistry.selectAppDom()
+    );  
+  }
+  static renderingLogo() {
+    return ()=> (
+      <div className="logo-container">
+        <img src='imgs/tiaotiao.png' alt="logo" className='logo-img'/>
+      </div>
+    );   
+  }
+  static renderingRouts() {
+    ReactDOM.render((
+      <Provider store={store}>
+        <HashRouter>
+          <Switch>
+            <Route path='/login' component={Login}/>
+            <Route path='/register' component={Register}/>
+            <Route path='/dialog' component={DialogMain}/>
+            <Route path='/dialogLogin' component={DialogLogin}/>
+            <Route component={Main}/>
+          </Switch>
+        </HashRouter>
+      </Provider>
+    ), JSXRegistry.selectAppDom());
+  }
+  static renderingLearnButton() {
+    ReactDOM.render(
+      <Button type='primary'>学习</Button>,
+      JSXRegistry.selectAppDom()
+    );
+  }
+  /*static renderingCountDown() {
+    return (count)=> <div>{count > 0 ? count: '新年快乐happy new year'}</div>;
+  }
+  static startDisplay() {
+    ReactDOM.render(
+      <CountDown startCount={10}>
+        {
+          JSXRegistry.renderingCountDown()
+        }
+      </CountDown>
+      , 
+      JSXRegistry.selectAppDom()
+    );
+  }*/
+  static selectAppDom() {
+    return document.querySelector('#like_app_container');
+  }
+}
+
+
+//CountDown.startDisplay = JSXRegistry.startDisplay;
+
+//CountDown.startDisplay();
+//JSXRegistry.renderingLearnButton();
+//JSXRegistry.renderingMain();
+JSXRegistry.renderingRouts();
+//JSXRegistry.startLogoDisplay();
+</script>
+</html>

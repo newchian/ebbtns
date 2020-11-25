@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css"
+	href="scripts/resources/css/ext-all.css" />
+</head>
+<body>
+	<h1>联手</h1>
+	<!-- <input type="button" value="单击我" onclick="buttonOnclick()" />
+	<input type="button" value="在我上面移动"
+		onmousemove="buttonOnmousemove(this)" />
+	<input type="button" value="按钮1" id="button1" />
+	<input type="button" value="按钮2" id="button2" /> -->
+	<div id="panel" />
+</body>
+<script type="text/javascript" src="scripts/ext-all.js"></script>
+<script type="text/javascript" src="scripts/locale/ext-lang-zh_CN.js"></script>
+<script type="text/javascript">
+	Ext.onReady(function() {
+		/* var d = new Date();
+		var time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+		Ext.MessageBox.alert("报时", "现在的时间是" + time);
+		buttonOnclick3();
+		 alert(this.value);
+
+		var button1 = Ext.get('button1'); //根据id获得button1按钮的对象
+		var button2 = Ext.get('button2'); //根据id获得button2按钮的对象
+		//下面两行代码为click事件指定了两个事件处理函数
+		button1.on('click', buttonOnclick1);
+		button1.on('click', buttonOnclick2);
+		//注册mousemove事件，并在mousemove事件处理函数中删除第二个click事件处理函数
+		button2.on('mousemove', function(Obj) {
+			alert(button2.getValue());
+			button1.un('click', buttonOnclick2)
+		});
+		//创建myObjectl对象
+		var myObject1 = {
+			value : 'myObject1',
+			buttonOnclick : function() {
+				alert(this.value);//this指向myObject1
+			}			
+		};
+		//创建myObject2对象
+		var myObject2 = new Object();
+		myObject2.value = 'myObject2';
+		myObject2.buttonOnclick = function() {
+			alert(this.value);//this指向myObject2
+		};
+		//  调用myObjectl.buttonOnclick方法．this表示myObject1
+		myObject1.buttonOnclick();
+		// 调用window.buttonOnclick方法,this表示myObject2
+		buttonOnclick3.call(myObject2);
+		//  调用myObject2.buttonOnclick方法，this表示window
+		myObject2.buttonOnclick.call(this);	
+		// Explicitly create a Container
+		Ext.create('Ext.container.Container', {
+		    layout: {
+		        type: 'hbox'
+		    },
+		    width: 400,
+		    renderTo: Ext.getBody(),
+		    border: 1,
+		    style: {borderColor:'#000000', borderStyle:'solid', borderWidth:'1px'},
+		    defaults: {
+		        labelWidth: 80,
+		        // implicitly create Container by specifying xtype
+		        xtype: 'datefield',
+		        flex: 1,
+		        style: {
+		            padding: '10px'
+		        }
+		    },
+		    items: [{
+		        xtype: 'datefield',
+		        name: 'startDate',
+		        fieldLabel: '开始日期'
+		    },{
+		        xtype: 'datefield',
+		        name: 'endDate',
+		        fieldLabel: '结束日期'
+		    }]
+		});
+				Ext.create('Ext.container.Container', {
+// 			  el: 'container',
+     renderTo: Ext.get('container'),
+			  style: 'background-color:red;position:absolute;',
+			  pageX:200,
+			  pageY:200,
+			  width:200,
+			  height:200,
+			  layout:'form',
+			  items:[{xtype:'buttan',
+			          style:'margin-top : 20px',
+			          width:50, 
+			          height:50,
+			          text:'按钮'
+			        }]
+			});
+// 			container.render(); */
+				Ext.create('Ext.Button', {
+				    text: '点击我',
+				    renderTo: Ext.getBody(),
+				    handler: function() {
+				        alert('您点击了本按钮！');
+				    }
+				});
+				Ext.create('Ext.Button', {
+			        text: '图像按钮1',
+			        icon: 'imgs/xlian24.png',
+			        renderTo: Ext.getBody(),
+			        scale:'medium',
+			        handler: function() {
+			            alert('您点击了图像按钮1！');
+			        }
+			    });
+				Ext.create('Ext.Button', {
+			        text: '图像按钮2',
+			        renderTo: Ext.getBody(),
+			        scale:'large',
+			        icon: 'imgs/xlian32.png',
+			        iconAlign:'top',
+			        handler: function() {
+			            alert('您点击了图像按钮2！');
+			        }
+			    });
+				var button1 = Ext.create('Ext.Button',{
+				    text:'确定'
+				});
+				var button2 = Ext.create('Ext.Button',{
+				    text:'取消'
+				});
+				var button3  = Ext.create('Ext.Button',{
+				    text:'点击我'
+				});
+
+				Ext.create('Ext.panel.Panel', {
+					  renderTo:'panel',
+					  title:'面板标题',
+					  pageX:200,
+					  pageY:200,
+					  width:200,
+					  height:200,
+					  border:true, //默认值为true
+					  buttonAlign:'left',//设置按钮的显示位置。可取的值是left、center和right．默认值为right
+					  collapsible:true,//设置panel可折叠
+					  draggable:true,// 设置panel可拖动
+					  floating:true,//设置panel使用绝对坐标确定位置
+					  frame:true,//使用圆角等风格渲染panel
+					  html:'<br><br><label style="font-size:20px">HTML内容</label>',
+					  iconCls:'panel',//设置标题栏的图像
+					  buttons: [button1,button2], //向panel添加两个按钮，在panel的下方显示
+					  items:[button3, {xtype:'field',  style:'margin-top: 10px'}]
+					});
+
+				Ext.create('Ext.window.Window', {
+				    title: '你好',
+				    height: 200,
+				    width: 400,
+				    layout: 'fit',
+				    items: {  // Let's put an empty grid in just to illustrate fit layout
+				        xtype: 'grid',
+				        border: false,
+				        columns: [{header: '世界'}],                 // One header just for show. There's no data,
+				        store: Ext.create('Ext.data.ArrayStore', {}) // A dummy empty data store
+				    }
+				}).show();
+				Ext.create('Ext.window.Window', {
+					   title:'窗口测试',
+				    pageX:50,
+				    pageY:50,
+				    width:400,
+				    height:200,
+				    collapsible:true,    //设置panel可折叠
+				    draggable:true,    //设置panel可拖动
+				    floating:true,  //设置panel使用绝对坐标确定位置
+				    closable:true,    //显示关闭按钮（在窗口的右上角）
+				    closeAction:'hide',//设置窗口关闭的动作，可设置的值是hide和close，默认值是close
+				    modal:true,    //设置当前窗口为模式状态，也就是说．显示窗口后，窗口后面的组件都
+				                    //不可操作
+				    minimizable:true,
+				    resizable:false,    //使窗口可以任意调整大小
+				    frame:true,    //使用圈角等风格渲染panel
+				    minHeight:300,  //设置窗口调整的最小高度，默认值是200像素
+				    minWidth:300,   //设置窗口调整的最小宽度，默认值是200像素
+				    buttons:[button1,button2],
+				    items:[{xtype:'field', style:'margin-top:10px; margin-left:10px'}]
+			 }).show();
+				//Ext.MessageBox.alert('提醒','今天做作业了吗？',showResult);
+				//Ext.MessageBox.confirm('请问','是否退出程序吗？',showResult);
+				//Ext.MessageBox.prompt('输入','请输入您居住的城市：',showResultText);
+				//waitOnclick();
+				//progressStater();
+// 				Ext.MessageBox.show({
+// 					  title:'输入',
+// 					  msg:'请输入您的联系方式：',
+// 					  width:300,
+// 					  buttons: Ext.MessageBox.OKCANCEL,
+// 					  multiline:true,
+// 					  fn:showResultText,
+// 					  animEl:'multilinePrompt'//需要指定一个HTML元素的id,以在显示和隐藏对话框时
+// 					                          //使用动画效果
+// 					});
+// 				Ext.MessageBox.show({
+// 					  title: '保存',
+// 					  msg:'是否保存当前文档,并退出系统呢？？',
+// 					  buttons: Ext.MessageBox.YESNOCANCEL,
+// 					  fn: showResult,
+// 					  animEl: 'yesnocancel',
+// 					  icon: Ext.MessageBox.QUESTION
+// 					});
+// 				Ext.MessageBox.show({
+// 					  title: '错误',
+// 					  msg: '您输入的内容有误！',
+// 					  buttons: Ext.MessageBox.OK,
+// 					  fn: showResult,
+// 					  icon: Ext.MessageBox.ERROR
+// 					});
+// 				waitStarter();
+//   formCreator();
+//formCreator2();
+// formCreator3();
+// formCreator4();
+// formCreator5();
+// formCreator5_1();
+// 	formCreator5_2();
+//   creatTrigger()();
+//   formCreator5_3();
+//   formCreator5_4();
+//   formCreator5_5();
+  registerFormShow();
+	});
+
+	function buttonOnclick() {
+		Ext.MessageBox.alert('您好', '单击事件被触发');
+	}
+	function buttonOnmousemove(obj) {
+		Ext.MessageBox.alert('您好', '鼠标在{' + obj.value + '}上移动');
+	}
+	function buttonOnclick1() {
+		alert('用ExtJS注册的第一个单击事件被触发');
+	}
+	function buttonOnclick2() {
+		alert('用EXtJS注册的第二个单击事件被触发');
+	}
+
+	var value = 'window';
+	function buttonOnclick3() {
+		//this指向window
+		alert(this.value);
+	}
+	function showResult(btn) {
+		alert('你单击了' + btn + '按钮', '单击按钮');
+	}
+	function showResultText(btn, text) {
+		alert('你单击了' + btn + '按钮，输入的文本是“' + text + ' ”', '单击按钮');
+	}
+	function waitOnclick() {
+		Ext.MessageBox.wait('任务正在处理中，请稍后…', '等待', {
+			interval : 100
+		});
+		setTimeout(function() {
+			Ext.MessageBox.hide();
+			alert('任务已经完成', '结束');
+		}, 6000);
+	}
+	function progressStater() {
+		Ext.MessageBox.progress('进度', '正在处理任务…', '0%己完成');
+		var f = function(v) {
+			return function() {
+				if (v == 22) {
+					Ext.MessageBox.hide(), alert('任务已经完成', '结束');
+				} else {
+					var i = v / 21;
+					Ext.MessageBox.updateProgress(i, Math.round(100 * i)
+							+ '%已完成');
+				}
+			};
+		};
+		//更新进度
+		for (var i = 0; i < 23; i++) {
+			setTimeout(f(i), i * 500);
+		}
+	}
+
+	function waitStarter() {
+		Ext.MessageBox.show({
+			title : '等待',
+			msg : '正在保存数据，请等待…',
+			progressText : '保存',
+			width : 300,
+			wait : true,
+			waitConfig : {
+				interval : 200
+			},
+			icon : 'imgs/xlian32.png'
+		});
+		setTimeout(function() {
+			Ext.MessageBox.hide();
+			alert('数据保存成功！', '信息');
+		}, 5000);
+	}
+	function formCreator() {
+		Ext.create('Ext.form.Panel', {
+			title : '简单表单',
+			bodyPadding : 5,
+			width : 350,
+			// The form will submit an AJAX request to this URL when submitted
+			url : 'save-form.php',
+			// Fields will be arranged vertically, stretched to full width
+			layout : 'anchor',
+			defaults : {
+				anchor : '100%'
+			},
+
+			// The fields
+			defaultType : 'textfield',
+			items : [ {
+				fieldLabel : '名字',
+				name : 'first',
+				allowBlank : false
+			}, {
+				fieldLabel : '姓氏',
+				name : 'last',
+				allowBlank : false
+			} ],
+
+			// Reset and Submit buttons
+			buttons : [ {
+				text : '重置',
+				handler : function() {
+					this.up('form').getForm().reset();
+				}
+			}, {
+				text : '提交',
+				formBind : true, //only enabled once the form is valid
+				disabled : true,
+				handler : function() {
+					var form = this.up('form').getForm();
+					if (form.isValid()) {
+						form.submit({
+							success : function(form, action) {
+								Ext.Msg.alert('成功', action.result.msg);
+							},
+							failure : function(form, action) {
+								Ext.Msg.alert('失败', action.result.msg);
+							}
+						});
+					}
+				}
+			} ],
+			renderTo : Ext.getBody()
+		});
+	}
+
+	function formCreator2() {
+		Ext.create('Ext.form.Panel', {
+			width : 220,
+			height : 130,
+			title : '表单',
+			url : 'teat.jsp',//指定要提交的服务端资源，包括JSP页面、Action等
+			frame : true,
+			//items:[{
+			defaultType : 'textfield',
+			//layout:'form',
+			defaults : {
+				labelWidth : 60,
+				labelAlign : 'right'
+			},
+			items : [ {
+				fieldLabel : '用户名'
+			}, {
+				fieldLabel : '密码'
+			} ],
+			//}],
+			buttons : [ {
+				text : '提交'
+			} ],
+			renderTo : Ext.getBody()
+		});
+	}
+
+	function formCreator3() {
+		Ext.create('Ext.form.Panel', {
+			width : 220,
+			height : 130,
+			title : '表单',
+			frame : true,
+			url : 'teat.jsp',//指定要提交的服务端资源，包括JSP页面、Action等
+			defaultType : 'textfield',
+			items : [ {
+				labelAlign : 'right',
+				labelWidth : 50,
+				emptyText : '空',
+				allowBlank : false,
+				maxLength : 30,
+				minLength : 10,
+				fieldLabel : '姓名'
+			} ],
+			buttons : [ {
+				text : '提交'
+			} ],
+			renderTo : Ext.getBody()
+		});
+	}
+
+	function formCreator4() {
+		Ext.create('Ext.form.Panel', {
+			width : 320,
+			// 			height : 220,
+			bodyPadding : 10,
+			title : '表单',
+			frame : true,
+			url : 'teat.jsp',//指定要提交的服务端资源，包括JSP页面、Action等
+			defaultType : 'textareafield',
+			items : [ {
+				labelWidth : 30,
+				labelAlign : 'right',
+				fieldLabel : '嗜好',
+				maxLength : 100,
+				minLength : 10,
+				// 				width : 300,
+				// 				height : 160,
+				grow : true,
+				anchor : '100%',
+				preventScrollbars : true
+			} ],
+			renderTo : Ext.getBody()
+		});
+	}
+
+	function formCreator5() {
+		Ext.create('Ext.form.Panel', {
+			width : 320,
+			bodyPadding : 10,
+			title : '表单',
+			frame : true,
+			url : 'teat.jsp',//指定要提交的服务端资源，包括JSP页面、Action等
+			defaultType : 'datefield',
+			items : [ {
+				name : 'birthday',
+				fieldLabel : '出生日期',
+				anchor : '100%',
+				//设置显示日期的格式
+				format : 'Y-m-d',
+				anchor : '85%',
+				//设置第2列和第7列不可选（星期一和星期六），该设置选项的取值范围是0至6
+				disabledDays : [ 1, 6 ],
+				//设置每个月的2和21号以及2009年的8月23号不可选
+				disabledDates : [ '02', '21', '2009-08-23' ]
+			} ],
+			renderTo : Ext.getBody()
+		});
+	}
+
+	function formCreator5_2() {
+		Ext.create('Ext.form.Panel', {
+			width : 320,
+			bodyPadding : 10,
+			title : '表单',
+			frame : true,
+			url : 'teat.jsp',//指定要提交的服务端资源，包括JSP页面、Action等
+			defaultType : 'combo',
+			items : [ {
+				fieldLabel : '性别',
+				mode : 'local',
+				store : new Ext.data.ArrayStore({
+					id : 0,
+					fields : [ 'myId', 'displayText' ],
+					data : [ [ 1, '男' ], [ 2, '女' ] ],
+				}),
+				valueField : 'myId',
+				displayField : 'displayText'
+			} ],
+			renderTo:Ext.getBody()
+		});
+	}
+	
+	function creatTrigger() {
+		var selectMenu;
+		//两个按钮的单击事件
+		function buttonClick(button) {
+		  //隐藏弹出式菜单
+		  selectMenu.hide();
+		  //将按钮的文本信息赋给TriggerField组件
+		  buttonsTriggerField.setValue(button.text);
+		}
+		var buttonsTriggerField = Ext.create('Ext.form.field.Trigger',{
+		  fieldLabel:'请选择按钮',
+		  name:'buttonValue',
+		  //覆盖onTriggerClick方法
+		  onTriggerClick: function() {
+		    if (selectMenu==undefined) {
+		      //创建一个菜单
+		      selectMenu = Ext.create('Ext.menu.Menu',{});
+		      //向菜单添加两个按钮
+		      selectMenu.add(Ext.create('Ext.Button',{
+		        text:'按钮1',
+		        handler:buttonClick
+		      }));
+		      selectMenu.add(Ext.create('Ext.Button',{
+		        text:'按钮2',
+		        handler:buttonClick
+		      }));
+		    }
+		    //显示菜单
+		    selectMenu.show(this.triggerEl);
+		  }
+		});
+		return ()=> Ext.create('Ext.form.FormPanel', {
+		    title: '拥有触发输入域的表单',
+		    frame : true,
+		    bodyPadding: 5,
+		    width: 350,
+		    renderTo: Ext.getBody(),
+		    items:[buttonsTriggerField]
+		});
+	}
+	
+	function formCreator5_3() {
+		  Ext.create('Ext.form.Panel', {
+			  title:'表单面板',
+			  //组件距FormPanel边界的距离
+			  bodyStyle:'padding:15px',
+			  frame:true,
+			  //将FormPanel的布局方式设为表单布局，如果不设置，默认就是表单布局
+			  layout:'form',
+			  width: 350,			  
+			  defaults: {
+       labelWidth:65,
+       //文本输入框的默认宽度
+       width:230,
+       //标签与相应的文本输入框之间的距离
+       labelPad:8,
+       //标签文本的对齐方式，可取的值有left、right和top，默认值是left
+       labelAlign :'right'
+     },
+			  defaultType:'textfield',			  
+			  //添加4个文本输入框
+			  items: [{
+			    fieldLabel:'姓名',
+			    name:'name',
+			    allowBlank:false
+			  },{
+				   fieldLabel:'爱好',
+			    name:'habit'
+			  },{
+			    fieldLabel:'电子邮箱',
+			    name:'email',
+			    vtype:'email'
+			  },{
+				  xtype:'textarea',
+			   fieldLabel:'个人简历',
+			   grow:true,
+			   name:'resume'
+			  }], 
+			  //添加两个按钮
+			  buttons:[
+			    {text:'保存'},
+			    {text:'取消'}
+			  ],		  			  
+			  renderTo:Ext.getBody()
+		  });
+		 }
+	
+ function formCreator5_4() {
+		 defaultProperties = {
+	    labelPad:8,
+	    labelWidth:50,
+	    labelAlign:'right',
+	  };
+		 cssStr = 'padding-left:15px;margin-left:8px; margin-top: 10px;margin-bottom:10px';
+		 var form = Ext.create('Ext.form.Panel', {
+			  title:'水平列布局的表单',
+			  labelAligh:'right',
+			  labelWidth:50,
+			  frame:true,
+			  width:600,
+			  url:'test.jsp',
+			  defaults: {
+			    frame:true
+			  },
+			  // 采用了ColumnLayout布局
+			  items: [{
+				   defaults: {
+				     frame:true
+				   },
+				   layout:'column',
+				   style:'margin-left:8px; margin-right:8px; margin-top: 10px;margin-bottom:10px',
+			    items:[{
+			    	// 采用了FormLayout布局
+			     layout:'form',
+			     style:cssStr,
+			     defaults: defaultProperties,
+			     columnWidth:.33,
+			     items:[{xtype:'textfield', fieldLabel:'姓名'}]
+			    },{
+			     layout:'form',
+			     style:cssStr,
+			     defaults: defaultProperties,
+			     columnWidth:.33,
+			     items:[{xtype:'textfield',fieldLabel:'居住地1'},
+			            {xtype:'textfield',fieldLabel:'居住地2'}]
+			   },{
+			    layout:'form',
+			    style:cssStr,
+			    defaults: defaultProperties,
+			    columnWidth:.33,
+			    items:[{xtype:'textfield', fieldLabel:'爱好1'},
+			           {xtype:'textfield', fieldLabel:'爱好2'},
+			           {xtype:'textfield', fieldLabel:'爱好3'}]
+			  }]}],
+			  buttons:[{
+			    text:'提交',
+			    handler:function(){form.getForm().submit();}
+			  }],
+			  renderTo:Ext.getBody()
+		 });
+	}
+	 
+	  function formCreator5_5() {
+		    var cssStr = 'padding-left:15px;margin-left:10px; margin-top: 10px;margin-bottom:10px';
+		    var defaultProperties = {
+              labelAlign:'right',
+              labelPad:8,
+              labelWidth:50
+      };
+		    Ext.create('Ext.form.Panel', {
+		        title:'具有输入域集的表单',
+		        labalWidth:50,
+		        url:'test.jsp',
+		        frame:true,
+		        width:480,
+		        layout:'column',
+		        defaults:{
+		          layout: 'form',
+		          bodystyle:'padding: 4px'
+		        },
+		        items:[{
+		          //第1个FieldSet组件
+		          xtype:'fieldset',
+		          defaults:defaultProperties,
+		          columnWidth:0.48,
+		          width:60,
+		          title:'输入域集1',
+		          //将该FieldSet组件设为可伸缩样式
+		          collapsible:true,
+		          defaultType:'textfield',
+		          style:cssStr,
+		          items:[{
+		            fieldLabel:'输入域1'
+		          }, {
+		            fieldLabel:'输入域2'
+		          }, {
+		            fieldLabel:'输入域3'
+		          }]
+		          }, {
+		          //第2个Fieldset组件
+		          xtype:'fieldset',
+		          defaults:defaultProperties,
+		          title:'输入域集2',
+		          columnWidth:0.48,
+		          layout: 'form',
+		          style:cssStr,
+		          defaultType:'textfield',
+		          items:[{
+		            fieldLabel:'输入域1'
+		          }, {
+		            fieldLabel:'输入域2'
+		          }, {
+		            fieldLabel:'输入域3'
+		          }]
+		        }],
+		        renderTo:Ext.getBody()
+		   });
+		 }
+	
+	  
+/* * * * * * * * * * * * 注册表单* * * * * * * * * * *  */	
+
+	  function registerNameFieldCreator() {
+		  return Ext.create('Ext.form.field.Text', {
+			  name:'name',
+			  fieldLabel:'您的姓名',
+			  anchor:'85%'
+		  });
+	  }
+	  
+	  function sexFieldCreator() {
+		  return Ext.create('Ext.form.ComboBox', {
+			  name:'sex',
+			  store:sexStore(),
+			  fieldLabel:'性别',
+			  //mode:'remote',
+			  queryMode: 'local',
+			  triggerAction:'all',
+			  valueField:'id',
+			  displayField:'name',
+			  hiddenName:"sexId",
+			  minListWidth:220,
+			  anchor:'85%',
+			  labelAlign:'right'
+			  //readOnly:true
+		  });
+		 }
+	  
+	  function sexStore() {
+		  return Ext.create('Ext.data.Store', {
+			  fields: ['id', 'name'],
+			  data : [
+			        {"id":"1", "name":"帅哥哥"},
+			        {"id":"2", "name":"美姐姐"},
+			        //...
+			    ]
+			});
+	  }
+	
+	  function birthdayFieldCreator() {
+		  return Ext.create('Ext.form.DateField', {
+			   name:'birthday',
+			   fieldLabel:'出生日期',
+			   format:'Y-m-d',
+			   anchor:'85%'			  
+		  });
+	  }
+	  
+	   function statusFieldCreator() {
+		    return Ext.create('Ext.form.ComboBox', {
+		    	 name:'status',
+		    	 store:statusStore(),
+		    	 fieldLabel:'目前身份',
+		    	 //mode:'remote',
+		    	 queryMode: 'local',
+		    	 triggerAction:'all',
+		    	 valueField:'id',
+		    	 displayField:'name' ,
+		    	 hiddenName:'statusId',
+		    	 minListWidth:220,
+		    	 anchor:'85%',
+		    	 //readOnly:true
+		    });
+		   }
+	
+	   function statusStore() {
+		    return Ext.create('Ext.data.Store', {
+		     fields: ['id', 'name'],
+		     data: [
+		      {"id":"1", "name":"项目经理"},
+		      //...
+		     ]
+		    });
+		  }
+	   
+	    function cityFieldCreator() {
+	      return Ext.create('Ext.form.ComboBox', {
+	       name:'city',
+	       store:cityStore(),
+	       fieldLabel:'居住城市',
+	       //mode:'remote',
+	       queryMode: 'local',
+	       //triggerAction:'all',
+	       valueField:'id',
+	       displayField:'name' ,
+	       hiddenName:'cityId',
+	       //minListWidth:220,
+	       anchor:'85%',
+	       //readOnly:true
+	      });
+	     }
+	   
+  function cityStore() {
+	   return Ext.create('Ext.data.Store', {
+	     fields: ['id', 'name'],
+	       data: [
+	         {"id":"1", "name":"济南"},
+	         //...
+	       ]
+	  });
+  }
+  
+  function companyFieldCreator() {
+	  return Ext.create('Ext.form.field.Text', {
+		  name:'company',
+		  fieldLabel:'工作单位',
+		  anchor:'85%'
+		 });
+  }
+	 
+  function cityHiddenFieldCreator() {
+	  return Ext.create('Ext.form.field.Hidden', {
+	   name: 'city',
+	   value: ''
+	  });
+  }
+  
+  function rightFieldSetCreator() {
+	  return Ext.create('Ext.form.FieldSet', {
+		  title:'个人信息',
+		  columnWidth:.52,
+		  height:237,
+		  style:'margin-left:20px',
+		  items:[{
+		    defaultType:'textfield',
+		    layout:'form',
+		    frame:true,
+		    defaults:{
+		    	labelAlign:'right',
+		    },
+		    items:[registerNameFieldCreator(), sexFieldCreator(), birthdayFieldCreator(), cityFieldCreator(), statusFieldCreator(),
+		           companyFieldCreator(),{
+		        	     name:'sex',
+		        	     xtype:'combobox',
+		        	     store:sexStore(),
+		        	     fieldLabel:'性别',
+		        	     //mode:'remote',
+		        	     queryMode: 'local',
+		        	     triggerAction:'all',
+		        	     valueField:'id',
+		        	     displayField:'name',
+		        	     hiddenName:"sexId",
+		        	     minListWidth:220,
+		        	     anchor:'85%',
+		        	     //readOnly:true
+		        	    }, cityHiddenFieldCreator()]}]
+		 });
+  }
+  
+  function registerFormShow() {
+	  Ext.create('Ext.form.Panel', {
+		  title: '用户注册',
+		  frame: true,
+		  layout: 'column',
+		  width: 550,
+		  renderTo: Ext.getBody(),
+		  items: [
+			  rightFieldSetCreator()
+    ]
+	  });
+  }
+  
+</script>
+</html>

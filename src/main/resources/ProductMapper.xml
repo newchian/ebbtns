@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xca.mp.simple.mapper.ProductMapper">
+ <select id="findAll" resultType="cn.xca.mp.simple.pojo.Product">
+  select * from t_product
+ </select>
+ <insert id="createProduct" parameterType="cn.xca.mp.simple.pojo.Product" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO t_product (
+        name, price, salePrice, typeId, typeName, image, flag, created, updated, creater, updater
+
+        )
+        VALUES (
+        #{name}, #{price}, #{salePrice}, #{typeId}, #{typeName}, #{image}, #{flag}, #{created}, #{updated}, #{creater}, #{updater}
+        )
+    </insert>
+</mapper>
+
