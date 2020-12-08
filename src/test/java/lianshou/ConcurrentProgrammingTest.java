@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -160,7 +161,66 @@ public class ConcurrentProgrammingTest {
 	  }
 	}
 	
+	static class Machina {
+	  public enum State {
+	    START, ONE, TWO, THREE, END;
+	    State step() {
+	      if(equals(END))
+	        return END;
+	      return values()[ordinal() + 1];
+	    }
+	  }
+	  private State state = State.START;
+	  private final int id;
+	  public Machina(int id) {
+	    this.id = id;
+	  }
+	  public static Machina work(Machina m) {
+	    if(!m.state.equals(State.END)){
+	      new Nap(0.1);
+	      m.state = m.state.step();
+	    }
+	    System.out.println(m);
+	    return m;
+	  }
+	  @Override
+	  public String toString() {
+	    return "Machina" + id + ": " + (state.equals(State.END)? "complete" : state);
+	  }
+	}
+
 	public static final int COUNT1 = 150;
+	@Test
+  public void completableApply() {
+    CompletableFuture<Machina> cf = CompletableFuture.completedFuture(new Machina(0));
+    CompletableFuture<Machina> cf2 = cf.thenApply(Machina::work);
+    CompletableFuture<Machina> cf3 = cf2.thenApply(Machina::work);
+    CompletableFuture<Machina> cf4 = cf3.thenApply(Machina::work);
+    CompletableFuture<Machina> cf5 = cf4.thenApply(Machina::work);
+	}
+	@Test
+  public void completedMachina() {
+		CompletableFuture<Machina> cf = CompletableFuture.completedFuture(new Machina(0));
+    try {
+      Machina m = cf.get();  // Doesn't block
+    }catch(InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
+	}
+	@Test
+  public void quittingCompletable() {
+		List<QuittableTask> tasks =
+        IntStream.range(1, COUNT1)
+            .mapToObj(QuittableTask::new)
+            .collect(Collectors.toList());
+    List<CompletableFuture<Void>> cfutures =
+        tasks.stream()
+            .map(CompletableFuture::runAsync)
+            .collect(Collectors.toList());
+    new Nap(1);
+    tasks.forEach(QuittableTask::quit);
+    cfutures.forEach(CompletableFuture::join);
+	}
 	@Test
   public void quittingTasks() {
 		ExecutorService es = Executors.newCachedThreadPool();

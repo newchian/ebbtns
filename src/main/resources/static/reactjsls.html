@@ -128,6 +128,7 @@ minimum-scale=1, user-scalable=no" />
 <script src="scripts/re/containers/personal.js" ></script>
 <script src="scripts/re/containers/chat.js" ></script>
 <script src="scripts/re/components/userList.js" ></script>
+<script src="scripts/re/containers/dialogPanel.js" ></script>
 
 <script type="text/babel">
 //require(['scripts/re/za/container/countDown.js'], function(CountDown) {
@@ -385,7 +386,11 @@ class JSXRegistry {
     );
   }
   static renderingDialogLogin() {
-    const {msg} = this.props;
+    const { msg, redirectTo } = this.props.user;
+    console.log("renderingDialogLogin(): redirectTo:",redirectTo);
+    if(redirectTo) {
+      return <Redirect to={redirectTo}/>;
+    }
     return <div className="background">
       <div className="header-w3l">
       <h1>测测聊天室</h1>
@@ -397,11 +402,11 @@ class JSXRegistry {
         <form>
 
             <div className="icon1">                
-                <select id="chatId"><option>红红</option><option>明明</option></select>
+                <select id="chatUsername"><option>shenshen</option><option>banban</option><option>banban8</option></select>
             </div>
 
             <div className="icon2">
-                <input placeholder="密码" id="chatPassword" type="password" value="1234"  onChange={val => this.handleChange('pwd', val)}/>
+                <input placeholder="密码" id="chatPassword" type="password" value="123"  onChange={val => this.handleChange('pwd', val)}/>
             </div>
 
             <div className="clear"></div>
@@ -415,7 +420,7 @@ class JSXRegistry {
       </div>;
   }
   static renderingDialogMain() {
-    const { chatId, login} = this.props.dialog;
+    const { chatId, login } = this.props.dialog;
     // 如果用户信息已完善, 自动跳转到主界面
     if (!chatId||!login) {
       return <Redirect to='/dialogLogin' />;
@@ -423,27 +428,51 @@ class JSXRegistry {
     return <div>对话框主面板</div>;
   }
   static renderingDialog() {
+    const { userId, username, online } = this.props.user,
+          { names, users, msgType, from, /*to, content,*/ dialogArr } = this.props.chat,
+          keyArray = Object.keys(users).filter(x=>names.includes(x)),
+          userArray = keyArray.map(id=> ({ ...users[id], userId:id })),
+          allDlgArr = dialogArr?dialogArr.filter(d=> d.to==='all'):[],
+          selfFromDlgArr = dialogArr?dialogArr.filter(d=> d.from===userId):[],
+          selfToDlgArr = dialogArr?dialogArr.filter(d=> d.to===userId):[];
+    console.log('renderingDialog()： userId：' + userId);
+    console.log('renderingDialog()： userArray：' + userArray);
+    userArray.forEach(user=> {
+      if(user)
+        console.log(`renderingDialog()： userArray：${user} && ${user.userId} != ${userId} && ${user.userId} != "HOUTAI" && ${user.username} != "admin"：` + user && user.userId != userId && user.userId != "HOUTAI" && user.username != "admin");
+    });
     return <div><img className='bgImg' src="chatr/img/chat_bg.jpg"></img>
     <div className="abs cover contaniner">
     <div className="abs cover pnl">
-        <div className="top pnl-head" style={{color: 'white'}} id="userName"></div>
+        <div className="top pnl-head" style={{color: 'white'}} id="userName">
+          {
+            !userId?null:(online?<div>用户：{username}<span style={{ float: 'right', color: 'green' }} >在线</span></div>:
+            <div>用户：'{username}<span style={{ float: 'right', color: 'red' }} >离线</span></div>)
+          }
+        </div>
         <div className="abs cover pnl-body" id="pnlBody">
             <div className="abs cover pnl-left">
                 <div className="abs cover pnl-msgs scroll" id="show">
                     <div className="pnl-list" id="hists"></div>
                     <div className="pnl-list" id="msgs">
+                        {
+                          selfToDlgArr.map(d=> <div className='msg robot'><div className='msg-left' worker={d.from}><div className='msg-host photo' style={{backgroundImage: 'url(chatr/img/avatar/Member002.jpg)'}} ></div><div className='msg-ball' title='今天 17:52:06' >{ d.content }</div></div></div>)
+                        }
+                        {
+                          selfFromDlgArr.map(d=> <div className='msg guest'><div className='msg-right'><div className='msg-host headDefault'></div><div className='msg-ball' title='今天 17:52:06'>{d.content}</div></div></div>) 
+                        }
                     </div>
                 </div>
 
                 <div className="abs bottom pnl-text">
                     <div className="abs cover pnl-input">
-                        <textarea className="scroll" id="context_text" onkeydown="sendMessage(self)" wrap="hard" placeholder="在此输入文字信息..."></textarea>
+                        <textarea className="scroll" id="context_text" onKeyDown={()=>this.sendMessage(userId)} wrap="hard" placeholder="在此输入文字信息..."></textarea>
                         <div className="abs atcom-pnl scroll hide" id="atcomPnl">
                             <ul className="atcom" id="atcom"></ul>
                         </div>
                     </div>
 
-                    <div className="abs br pnl-btn" id="submit" style={{backgroundColor: '#20C4CA',color: 'white'}} onclick="sendMsg(self)">
+                    <div className="abs br pnl-btn" id="submit" style={{backgroundColor: '#20C4CA',color: 'white'}} onClick={()=>this.sendMsg(userId)}>
                         发送
                     </div>
                     <div className="pnl-support" id="copyright"><a href="http://www.cece.cn">测测,版本所有</a></div>
@@ -459,6 +488,15 @@ class JSXRegistry {
                     </div>
                     <div className="pnl-hot">
                         <ul className="rel-list unselect" id="userlist">
+                          {
+                            msgType==='user'?<li className="rel-item"><input type="radio" name="toUser" value="all" />广播</li>:null
+                          }
+                          {
+                            userArray.map(user=> !user || user.userId === userId || user.userId === 'HOUTAI' || user.username === 'admin'?null:(from===user.userId?  
+                              <li className="rel-item"><input type="radio"  name="toUser" value={user.userId} checked='checked' />{user.username}</li>:
+                              <li className="rel-item"><input type="radio"  name="toUser" value={user.userId} />{user.username}</li>)                           
+                            )
+                          }
                         </ul>
                     </div>
 
@@ -471,6 +509,14 @@ class JSXRegistry {
                     </div>
                     <div className="pnl-hot">
                         <ul className="rel-list unselect" id="broadcastList">
+                          {
+                            userArray.map(user=> user&& user.userId != userId && user.userId != 'HOUTAI' && user.username != 'admin'? 
+                              <li name="rel-item">您的好友 { user.username }已上线了！</li>: null
+                            )
+                          }
+                          {
+                            allDlgArr.map(c=> <li class="rel-item"> 系统广播消息：{ c.content } </li>  )                            
+                          }
                         </ul>
                     </div>
                 </div>
@@ -666,7 +712,7 @@ class JSXRegistry {
           <Switch>
             <Route path='/login' component={Login}/>
             <Route path='/register' component={Register}/>
-            <Route path='/dialog' component={DialogMain}/>
+            <Route path='/dialog' component={Dialog}/>
             <Route path='/dialogLogin' component={DialogLogin}/>
             <Route component={Main}/>
           </Switch>

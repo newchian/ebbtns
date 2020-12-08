@@ -3,7 +3,7 @@
  */
 
 (global=> {
-const {combineReducers} = Redux;
+const { combineReducers } = Redux;
 const {
   AUTH_SUCCESS,
   ERROR_MSG,
@@ -12,12 +12,17 @@ const {
   RECEIVE_USER_LIST,
   RECEIVE_MSG_LIST,
   RECEIVE_MSG,
-  MSG_READ
+  MSG_READ,
+  AUTH_DIALOG_SUCCESS,
+  OPEN_CLOSE_CHAT,
+  DISPLAY_CONNECTED_USER,
+  UNDISPLAY_DISCONNECTED_USER,
+  RECEIVE_DLG
 } = ActionTypes;
 
-const dialog = (state = {chatId: 'Tom1世', pwd: '123456', login: false},action)=> {
+/*const dialog = (state = {chatId: 'Tom1世', pwd: '123456', login: false},action)=> {
 	return state;
-};
+};*/
 
 const initUser = {
 	//userId: '', // 用户id
@@ -43,22 +48,25 @@ function chat(state = initChat, action) {
             var { chatMsg, userId } = action.payload;
             console.log("chat的RECEIVE_MSG case: ", chatMsg);
             return {
-                chatMsgs: [...state.chatMsgs, chatMsg],
+                chatMsgs: [ ...state.chatMsgs, chatMsg ],
                 users: state.users,
                 unReadCount: state.unReadCount + (!chatMsg.read && chatMsg.to === userId ? 1 : 0)
             };
 	case RECEIVE_MSG_LIST:
-            var { chatMsgs, users, userId } = action.payload;
+            var { chatMsgs, users, userId, msgType, names } = action.payload;
             console.log("接收消息列表RECEIVE_MSG_LIST: ", chatMsgs);
             return {
                 chatMsgs,
                 users,
+                msgType,
+                names,
+                dialogArr: [],
                 unReadCount: chatMsgs.reduce((preTotal, msg) => { // 别人发给我的未读消息
                     return preTotal + (!msg.read && msg.to === userId ? 1 : 0)
                 }, 0)
             };
 	case MSG_READ:
-            const { count, from, to } = action.payload;
+						var { count, from, to } = action.payload;
             return {
                 chatMsgs: state.chatMsgs.map(msg => {
                     if (msg.from === from && msg.to === to && !msg.read) {
@@ -71,8 +79,17 @@ function chat(state = initChat, action) {
                 users: state.users,
                 unReadCount: state.unReadCount - count
             };
+	case DISPLAY_CONNECTED_USER:
+  	return { ...state, names: [ ...state.names, action.payload ] };
+	case UNDISPLAY_DISCONNECTED_USER:
+		return { ...state, names: state.names.filter(e=> e !== action.payload) };
+	case RECEIVE_DLG:
+		console.log("接收对话: " + action.payload);
+		var { /*content,*/from } = action.payload;
+		// 只要在前面的状态里提供dialogArr这个数组那么这一次就不会出现Uncaught TypeError: state.dialogArr is not iterable了。
+		return { ...state, /*...action.payload,*/from, dialogArr: [ ...state.dialogArr, action.payload ] };//state.dialogArr is not iterable
 	default:
-            return state;
+    return state;
 	}
 }
 
@@ -87,9 +104,10 @@ function userList(state = initUserList, action) {
 }
 
 function user(state = initUser, action) {
-  switch (action.type) {
+	let redirectTo;
+	switch (action.type) {  
   case AUTH_SUCCESS: // 认证成功
-    const redirectTo = getRedirectPath(action.payload);
+    redirectTo = getRedirectPath(action.payload);
     console.log("认证成功: ", { ...action.payload, redirectTo });
     return { ...action.payload, redirectTo };
   case ERROR_MSG: // 错误信息提示
@@ -101,6 +119,11 @@ function user(state = initUser, action) {
   case RESET_USER: // 重置用户
   	console.log("重置用户: ", { ...initUser, msg: action.payload });
     return { ...initUser, msg: action.payload };
+  case AUTH_DIALOG_SUCCESS: // 对话认证成功
+  	redirectTo = "/dialog";
+  	return { ...action.payload, redirectTo };
+  case OPEN_CLOSE_CHAT: // 打开聊天连接了
+  	return { ...state, online: action.payload };
   default:
     return state;
   }
@@ -110,7 +133,7 @@ global.Reducers={};
 
 global.Reducers.combinedReducers = combineReducers({
   user,
-  dialog,
+  //dialog,
   userList,
   chat
 });

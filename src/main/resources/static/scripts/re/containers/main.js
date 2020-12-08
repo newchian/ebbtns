@@ -47,7 +47,7 @@ class Main extends React.Component {
 		const {user} = this.props;
 		console.log("Main:componentDidMount(): user.userId=", user.userId);
 		if (!user.userId) {
-			this.props.getUser() // 获取user并保存到redux中
+			this.props.getUser(user.userId) // 获取user并保存到redux中
 		}
 	}*/
 	render() {

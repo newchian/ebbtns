@@ -9,13 +9,13 @@
 	// 请求登陆
 	global.API.reqLogin = (user) => ajax(host+'/login', user, 'POST');
 	global.API.reqUpdateUser = (user) => ajax(host+'/update', user, 'POST');
-	global.API.reqUser = () => ajax('/getuser');
+	global.API.reqUser = (userId) => ajax('/getuser', { userId });
 	//请求获取用户列表
-	global.API.reqUserList = (type) => ajax('/userlist', {type});
+	global.API.reqUserList = (type) => ajax('/userlist', { type });
 	// 请求获取当前用户的所有聊天记录
-	global.API.reqChatMsgList = () => ajax('/msglist')
+	global.API.reqChatMsgList = (userId, type) => ajax('/msglist',{ userId, type })
 	// 标识查看了指定用户发送的聊天信息
-	global.API.reqReadChatMsg = (from) => ajax('/readmsg', {from}, 'POST')
+	global.API.reqReadChatMsg = (from, to) => ajax('/readmsg', { from, to }, 'POST')
 })(this,'http://localhost:8081');
 
 

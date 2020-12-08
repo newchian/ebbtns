@@ -37,12 +37,12 @@ class Chat extends React.Component {
       this.setState({content: '', isShow: false});
   }
   componentWillUnmount() {
-      this.props.readMsg(this.props.match.params.userId);
+      this.props.readMsg(this.props.match.params.userId, this.props.user.userId);
   }
   componentDidMount() {
       // 初始显示列表
       window.scrollTo(0, document.body.scrollHeight);
-      //this.props.readMsg(this.props.match.params.userId);
+      //this.props.readMsg(this.props.match.params.userId, this.props.user.userId);
   }
   componentDidUpdate() {
       // 更新显示列表

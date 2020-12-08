@@ -10,7 +10,12 @@ const {
     RECEIVE_MSG_LIST,
     RECEIVE_MSG,
     MSG_READ,
-    RECEIVE_USER_LIST
+    RECEIVE_USER_LIST,
+    AUTH_DIALOG_SUCCESS,
+    OPEN_CLOSE_CHAT,
+    DISPLAY_CONNECTED_USER,
+    UNDISPLAY_DISCONNECTED_USER,
+    RECEIVE_DLG
 } = ActionTypes;
 const {
     reqRegister,
@@ -40,7 +45,7 @@ const {
 	const receiveMsg = (payload) => ({type: RECEIVE_MSG, payload});
 	// 阅读了消息的同步action
 	const msgRead = (payload) => ({type: MSG_READ, payload});
-
+	const authDialogSuccess = (payload) => ({type: AUTH_DIALOG_SUCCESS, payload});
 	/*
 	初始化客户端socketio
 	1. 连接服务器
@@ -52,6 +57,28 @@ const {
 	    io.socket = io(url + "?userId=" + userId);
 	    io.socket.on('connected', chatMsg=> {
 	    	console.log("connected: " + userId + "：" + chatMsg);
+	    	console.log("connected: OPEN_CHAT:" + OPEN_CLOSE_CHAT);
+	    	dispatch({ type: OPEN_CLOSE_CHAT,  payload: true });
+	    });
+	    io.socket.on('disconnected', chatMsg=> {
+	    	console.log("disconnected: " + userId + "：" + chatMsg);	    	
+	    	//console.log("disconnected: CLOSE_CHAT:" + OPEN_CLOSE_CHAT);
+	    	//dispatch({ type: OPEN_CLOSE_CHAT,  payload: false });
+	    	undisplayUser();
+	    });
+	    io.socket.on('stop', chatMsg=> {
+	    	console.log("stop: " + userId + "：" + chatMsg);	    	
+	    	//console.log("stop: CLOSE_CHAT:" + OPEN_CLOSE_CHAT);
+	    	//dispatch({ type: OPEN_CLOSE_CHAT,  payload: false });
+	    	undisplayUser();
+	    });
+	    io.socket.on('displayConnectedUser', chatMsg=> {
+	    	console.log("displayConnectedUser: " + userId + "：" + chatMsg);	    	
+	    	dispatch({ type: DISPLAY_CONNECTED_USER,  payload: chatMsg });
+	    });
+	    io.socket.on('undisplayDisconnectedUser', chatMsg=> {
+	    	console.log("undisplayDisconnectedUser: " + userId + "：" + chatMsg);	    	
+	    	dispatch({ type: UNDISPLAY_DISCONNECTED_USER,  payload: chatMsg });
 	    });
 	    io.socket.on('receiveMsg', (chatMsg) => {
 	    	console.log("userId: ",userId);
@@ -62,29 +89,53 @@ const {
 	        dispatch(receiveMsg({chatMsg, userId}));//dispatch(receiveMsg({chatMsg, isToMe: chatMsg.to === userId}));
 	      }
 	    });
+	    //好像这些onxxxx方法都是侦听客户端事件的而不是侦听服务器端事件的上述这些io.socket.on方法才是服务器端发生的事件的
+	    io.socket.onopen = ()=> {
+	    	console.log("io.socket.onopen: OPEN_CHAT:" + OPEN_CLOSE_CHAT);
+	    	dispatch({ type: OPEN_CLOSE_CHAT,  payload: true });
+	    };
+	    //io.socket.onconnect = io.socket.onopen;
+	    const undisplayUser = ()=> {//这个方法是侦听程序退出（页面卸载）过程中发生的事件的
+	    	console.log("undisplayUser");
+	    	io.socket.emit('undisplayUser', userId);
+	    	dispatch({ type: OPEN_CLOSE_CHAT,  payload: false });
+	    	io.socket.disconnect();
+	    };
+	    //io.socket.ondisconnect = undisplayUser;
+	    document.body.onunload = undisplayUser;
+	    io.socket.on('receiveDialog', (chat) => {
+	    	dispatch({type: RECEIVE_DLG, payload: chat});
+	    });
 	  }
 	}
 	/*
 	获取当前用户相关的所有聊天消息列表
 	(在注册/登陆/获取用户信息成功后调用)
 	*/
-	async function getMsgList(dispatch, userId, connected) {
-		console.log("getMsgList: connected=" + connected);
+	async function getMsgList(dispatch, userId, connected, msgType='msg') {
+		//console.log("getMsgList: connected=" + connected);
+		console.log("getMsgList: msgType=" + msgType);
 		//if(!connected){
 		initIo(dispatch, userId);
     //}
-    const response = await reqChatMsgList();
+    const response = await reqChatMsgList(userId, msgType);
     const result = response.data;
     if (result.code === 0) {
-        const { chatMsgs, users } = result.bo;
-        dispatch(receiveMsgList({ chatMsgs, users, userId }));
+        const { chatMsgs, users, msgType } = result.bo;
+        const { names } = result;
+        dispatch(receiveMsgList({ chatMsgs, users, userId, msgType, names }));
     }
+	}
+	global.Actions.sendDialog = (chat)=> {//聊天对象
+		return async dispatch => {
+      io.socket.emit('sendDialog', chat);
+		};
 	}
 	//global.Actions.getMsgList = getMsgList;
 	/*
 	发送消息的异步action
 	*/
-	global.Actions.sendMsg = ({ from, to, content }) => {
+	global.Actions.sendMsg = ({ from, to, content })=> {
 	    return async dispatch => {
 	        io.socket.emit('sendMsg', { from, to, content });
 	    };
@@ -92,13 +143,13 @@ const {
 	/*
 	更新读取消息的异步action
 	*/
-	global.Actions.readMsg = (userId) => {
+	global.Actions.readMsg = (fromId,toId) => {
 	    return async (dispatch, getState) => {
-	        const response = await reqReadChatMsg(userId);
+	        const response = await reqReadChatMsg(fromId,toId);
 	        const result = response.data;
 	        if (result.code === 0) {
 	            const count = result.bo;
-	            const from = userId;
+	            const from = fromId;
 	            const to = getState().user.userId;
 	            dispatch(msgRead({ from, to, count }));
 	        }
@@ -117,9 +168,9 @@ const {
 	/*
 	异步获取用户
 	*/
-	global.Actions.getUser = () => {
+	global.Actions.getUser = (userId) => {
 		return async dispatch=> {
-			const response = await reqUser();
+			const response = await reqUser(userId);
 			const result = response.data;
 			if (result.code === 0) {
 				console.log("getUser: getMsgList: connected=" + result.connected);
@@ -134,12 +185,20 @@ const {
 	 * 异步聊天对话框登录法
 	 * 
 	 */
-	global.Actions.loginingDialog = ({ chatId, pwd }) => {
-		if (!chatId || !pwd) {
+	global.Actions.loginingDialog = ({ username, password }) => {
+		if (!username || !password) {
       return errorMsg('聊天id或密码必须输入');
     }
 		return async dispatch => {
-			 
+			const response = await reqLogin({ username, password });
+    	const result = response.data;
+    	if (result.code === 0) {
+    		console.log("Actions.loginingDialog: result.code === 0：result.bo.userId：" + result.bo.userId);
+    		getMsgList(dispatch, result.bo.userId, result.connected,'user');
+    		dispatch(authDialogSuccess({...result.bo, names: result.names}));
+    	} else {
+    		dispatch(errorMsg(result.msg));
+    	}
 		};
 	}
 	/*

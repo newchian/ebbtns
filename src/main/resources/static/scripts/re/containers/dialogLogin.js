@@ -18,15 +18,15 @@ class DialogLogin extends React.Component {
   	pwd: '',
   }*/
   // 登陆
-  login = () => {
+  login = ()=> {
   	 /*if(this.state.chatId === ''||this.state.pwd === ''){
-  		 this.setState({chatId: document.querySelector('#chatId').value,
+  		 this.setState({chatId: document.querySelector('#chatUsername').value,
   		 pwd: document.querySelector('#chatPassword').value});
   	 }*/
-  	console.log(document.querySelector('#chatId').value,document.querySelector('#chatPassword').value);
+  	console.log("DialogLogin:login:" + document.querySelector('#chatUsername').value + ":" + document.querySelector('#chatPassword').value);
   	this.props.loginingDialog({
-    	chatId: document.querySelector('#chatId').value,
-    	pwd: document.querySelector('#chatPassword').value
+  		username: document.querySelector('#chatUsername').value,
+  		password: document.querySelector('#chatPassword').value
     });
   }
   render() {  	
@@ -35,9 +35,10 @@ class DialogLogin extends React.Component {
 }
 
 global.DialogLogin = connect(
-	state => ({ dialog: state.dialog }),
+	state => ({ user: state.user }),
 	{loginingDialog}
 )(DialogLogin);
+
 })(this);
 
 

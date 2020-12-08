@@ -41,6 +41,10 @@ public class SocketIOServiceImp implements ISocketIOService {
 	private static final String PUSH_DATA_EVENT = "push_data_event";
 	private static final String SEND_MESSAGE = "sendMsg";
 	private static final String RECEIVE_MSG = "receiveMsg";
+	private static final String SOMEONE = "有人上线了！";
+	private static final String RECEIVE_SOMEONE = "RECEIVE_SOMEONE";
+	public static final String HOUTAI = "HOUTAI";
+	public static final String RECEIVE_SOMEONE_OFFLINE = "RECEIVE_SOMEONE_OFFLINE";
 	@Autowired
 	private SocketIOServer socketIOServer;
 	@Autowired
@@ -70,8 +74,10 @@ public class SocketIOServiceImp implements ISocketIOService {
 			if (userId != null) {
 				System.out.println("连接时从客户端传来的userId：" + userId);
 				clientMap.put(userId, client);
+				//socketIOServer.getBroadcastOperations().sendEvent(RECEIVE_SOMEONE, SOMEONE);
+				clientMap.values().stream().filter(c-> !client.equals(c)).forEach(c->c.sendEvent("displayConnectedUser", userId));//(c-> !c.equals(client));
 			}
-			System.out.println("已维护的客户端：");
+			System.out.println("start(): 已维护的客户端：");
 			clientMap.values().forEach(System.out::println);
 			//连接时从客户端传来的userId：5fb3edd5033e604156053092
 			//已维护的客户端：
@@ -90,6 +96,17 @@ public class SocketIOServiceImp implements ISocketIOService {
 			 * 接时都创建一个新的事件处理器函数实例，从而导致一次事件被多个处理器处理，也就是说将接收消息事件广播
 			 * 了多次！
 			 */
+		});
+		socketIOServer.addEventListener("sendDialog", Chat.class, (client2, data, ackSender) -> {
+			System.out.println("sendDialog：" + data);
+			socketIOServer.getBroadcastOperations().sendEvent("receiveDialog", data);
+		});
+		socketIOServer.addEventListener("undisplayUser", String.class, (client2, data, ackSender) -> {
+			if(clientMap.isEmpty()){
+				socketIOServer.getBroadcastOperations().sendEvent("undisplayDisconnectedUser", data);
+				return;
+			}	
+			clientMap.values().stream().filter(c-> !client2.equals(c)).forEach(c->c.sendEvent("undisplayDisconnectedUser", data));
 		});
 		socketIOServer.addEventListener(SEND_MESSAGE, Chat.class, (client2, data, ackSender) -> {// 所有回调函数实例接收不同(相同也是有可能的)的客户端相同的数据。
 			// 客户端推送`client_info_event`事件时，onData接收object类型数据。
@@ -115,8 +132,7 @@ public class SocketIOServiceImp implements ISocketIOService {
 			Chat saved = chatRepository.save(chat);
 			if (saved != null) {
 				// 保存完成后, 向所有连接的客户端发送消息
-				socketIOServer.getBroadcastOperations().sendEvent(RECEIVE_MSG, saved);// 全局发送,
-																																							// 所有连接的客户端都可以收到
+				socketIOServer.getBroadcastOperations().sendEvent(RECEIVE_MSG, saved);// 全局发送,																																							// 所有连接的客户端都可以收到
 				log.debug(clientIp + " ************ 服务器向所有连接的客户端发送消息：" + saved);
 				System.out.println(clientIp + " ************ 发自服务器：" + saved);
 			}
@@ -141,7 +157,11 @@ public class SocketIOServiceImp implements ISocketIOService {
 //				System.out.println(" ***********************null后：");
 //				socketIOServer.getAllClients().stream().peek(System.out::println);
 				System.out.println("socketIOServer.getAllClients()：");
-				socketIOServer.getAllClients().stream().peek(System.out::println);	
+				socketIOServer.getAllClients().stream().peek(System.out::println);
+				System.out.println("socketIOServer.addDisconnectListener: 已维护的客户端：");
+				clientMap.values().forEach(System.out::println);
+				//socketIOServer.getBroadcastOperations().sendEvent(RECEIVE_SOMEONE_OFFLINE, userId);
+				client.sendEvent("disconnected", "你已断开了哦...");
 			}			
 		});
 		// 自定义事件`client_info_event` -> 监听客户端消息
@@ -151,14 +171,6 @@ public class SocketIOServiceImp implements ISocketIOService {
 			log.debug(clientIp + " ************ 客户端：" + data);
 			System.out.println(clientIp + " ************ 客户端：" + data);
 		});
-		// 自定义事件`client_info_event` -> 监听客户端消息
-		socketIOServer.addEventListener(PUSH_DATA_EVENT, String.class, (client, data, ackSender) -> {
-			// 客户端推送`client_info_event`事件时，onData接受数据，这里是string类型的json数据，还可以为Byte[],object其他类型
-			String clientIp = getIpByClient(client);
-			log.debug(clientIp + " ************ 客户端：" + data);
-			System.out.println(clientIp + " ************ 客户端：" + data);
-		});
-
 		// 启动服务
 		socketIOServer.start();
 		// broadcast: 默认是向所有的socket连接进行广播，但是不包括发送者自身，如果自己也打算接收消息的话，需要给自己单独发送。
@@ -182,6 +194,8 @@ public class SocketIOServiceImp implements ISocketIOService {
 			socketIOServer = null;
 		}
 		System.out.println("socketIOServer*********************** " + "服务器已停止");
+		clientMap.clear();
+		socketIOServer.getBroadcastOperations().sendEvent("stop", "服务器已停止了哦...");
 	}
 	@Override
 	public void pushMessageToUser(String userId, String msgContent) {
