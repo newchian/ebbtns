@@ -13,13 +13,22 @@ class Dialog extends React.Component {
 		super(props);
 		this.renderingDialog = JSXRegistry.renderingDialog;
 	}
+	componentDidMount() {
+    // 初始显示列表
+		window.scrollTo(document.querySelector("#msgs").scrollTop, 
+				document.querySelector("#msgs").scrollHeight);
+	}
+	componentDidUpdate() {
+    // 更新显示列表
+		window.scrollTo(document.querySelector("#msgs").scrollTop, 
+    		document.querySelector("#msgs").scrollHeight);
+  }
 	sendMsg(from) {
 		const content = document.querySelector("#context_text").value.trim();
 		if(!content){
       alert('请输入消息内容');
       return ;
-		}
-		
+		}		
 		const chat = {  
 				from,
 				//to: document.querySelector('input[type="radio"]').checked//document.querySelector('input:radio:checked').value,Failed to execute 'querySelector' on 'Document': 'input:radio:checked' is not a valid selector.
@@ -35,7 +44,7 @@ class Dialog extends React.Component {
 	sendMessage(from){
 		console.log("Dialog: sendMessag(from): " + from);
 		if(event.keyCode == 13){
-      sendMsg(from);
+      this.sendMsg(from);
 		}
 	}
   render() {

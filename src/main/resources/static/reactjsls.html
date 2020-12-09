@@ -433,8 +433,9 @@ class JSXRegistry {
           keyArray = Object.keys(users).filter(x=>names.includes(x)),
           userArray = keyArray.map(id=> ({ ...users[id], userId:id })),
           allDlgArr = dialogArr?dialogArr.filter(d=> d.to==='all'):[],
-          selfFromDlgArr = dialogArr?dialogArr.filter(d=> d.from===userId):[],
-          selfToDlgArr = dialogArr?dialogArr.filter(d=> d.to===userId):[];
+          selfDlgArr = dialogArr?dialogArr.filter(d=> d.from===userId||d.to===userId):[]
+          /*selfFromDlgArr = dialogArr?dialogArr.filter(d=> d.from===userId):[],
+          selfToDlgArr = dialogArr?dialogArr.filter(d=> d.to===userId):[]*/;
     console.log('renderingDialog()： userId：' + userId);
     console.log('renderingDialog()： userArray：' + userArray);
     userArray.forEach(user=> {
@@ -456,10 +457,9 @@ class JSXRegistry {
                     <div className="pnl-list" id="hists"></div>
                     <div className="pnl-list" id="msgs">
                         {
-                          selfToDlgArr.map(d=> <div className='msg robot'><div className='msg-left' worker={d.from}><div className='msg-host photo' style={{backgroundImage: 'url(chatr/img/avatar/Member002.jpg)'}} ></div><div className='msg-ball' title='今天 17:52:06' >{ d.content }</div></div></div>)
-                        }
-                        {
-                          selfFromDlgArr.map(d=> <div className='msg guest'><div className='msg-right'><div className='msg-host headDefault'></div><div className='msg-ball' title='今天 17:52:06'>{d.content}</div></div></div>) 
+                          selfDlgArr.map(d=> d.to===userId?<div className='msg robot'><div className='msg-left' worker={users[d.from].username}><div className='msg-host photo' style={{backgroundImage: 'url(chatr/img/avatar/Member002.jpg)'}} ></div><div className='msg-ball' title='今天 17:52:06' >{ d.content }</div></div></div>:
+                            <div className='msg guest'><div className='msg-right'><div className='msg-host headDefault'></div><div className='msg-ball' title='今天 17:52:06'>{d.content}</div></div></div>
+                          )
                         }
                     </div>
                 </div>
