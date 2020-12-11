@@ -191,6 +191,18 @@ public class ConcurrentProgrammingTest {
 
 	public static final int COUNT1 = 150;
 	@Test
+  public void completableApplyChained() {
+    Timer timer = new Timer();
+    CompletableFuture<Machina> cf =
+    CompletableFuture.completedFuture(
+        new Machina(0))
+              .thenApply(Machina::work)
+              .thenApply(Machina::work)
+              .thenApply(Machina::work)
+              .thenApply(Machina::work);
+    System.out.println(timer.duration());
+	}
+	@Test
   public void completableApply() {
     CompletableFuture<Machina> cf = CompletableFuture.completedFuture(new Machina(0));
     CompletableFuture<Machina> cf2 = cf.thenApply(Machina::work);

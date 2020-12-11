@@ -15,13 +15,15 @@ class Dialog extends React.Component {
 	}
 	componentDidMount() {
     // 初始显示列表
-		window.scrollTo(document.querySelector("#msgs").scrollTop, 
-				document.querySelector("#msgs").scrollHeight);
+		console.log("Dialog: componentDidMount(): "+document.querySelector("#show"));
+		document.querySelector("#show").scrollTo(0, 
+				document.querySelector("#show").scrollHeight);
 	}
 	componentDidUpdate() {
     // 更新显示列表
-		window.scrollTo(document.querySelector("#msgs").scrollTop, 
-    		document.querySelector("#msgs").scrollHeight);
+		console.log("Dialog: componentDidUpdate(): "+document.querySelector("#show"));
+		document.querySelector("#show").scrollTo(0, 
+    		document.querySelector("#show").scrollHeight);
   }
 	sendMsg(from) {
 		const content = document.querySelector("#context_text").value.trim();
